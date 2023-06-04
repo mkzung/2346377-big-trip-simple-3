@@ -15,26 +15,39 @@ export default class WaypointPresenter {
   #waypointComponent = null;
   #waypoint = null;
   #mode = Mode.DEFAULT;
+  #offers = [];
+  #destinations = [];
+  #handleDataChange = null;
 
-  constructor({waypointList, onModeChange}) {
+  constructor({waypointList, onModeChange, offers, destinations, onDataChange}) {
     this.#waypointList = waypointList;
     this.#handleModeChange = onModeChange;
+    this.#offers = offers;
+    this.#destinations = destinations;
+    this.#handleDataChange = onDataChange;
   }
 
-  init(waypoint) {
+  init(waypoint, destinations, offers) {
     this.#waypoint = waypoint;
+    this.#destinations = destinations;
+    this.#offers = offers;
 
     const prevWaypointComponent = this.#waypointComponent;
     const prevEditFormComponent = this.#editFormComponent;
 
     this.#waypointComponent = new WaypointView({
       oneWaypoint: this.#waypoint,
-      onClick: this.#handleEditClick
+      onClick: this.#handleEditClick,
+      offers: this.#offers,
+      destinations: this.#destinations,
     });
 
     this.#editFormComponent = new EditForm({
       oneWaypoint: waypoint,
-      onSubmit: this.#handleFormSubmit
+      onSubmit: this.#handleFormSubmit,
+      offers: this.#offers,
+      destinations: this.#destinations,
+      onRollUpButton: this.#handleButtonClick,
     });
 
     if (prevWaypointComponent === null || prevEditFormComponent === null) {
@@ -61,6 +74,7 @@ export default class WaypointPresenter {
 
   resetView() {
     if (this.#mode !== Mode.DEFAULT) {
+      this.#editFormComponent.reset(this.#waypoint);
       this.#replaceFormToPoint();
     }
   }
@@ -79,6 +93,7 @@ export default class WaypointPresenter {
   #ecsKeydown = (evt) => {
     if (isEsc(evt)) {
       evt.preventDefault();
+      this.#editFormComponent.reset(this.#waypoint);
       this.#replaceFormToPoint();
       document.body.removeEventListener('keydown', this.#ecsKeydown);
     }
@@ -89,7 +104,14 @@ export default class WaypointPresenter {
     document.body.addEventListener('keydown', this.#ecsKeydown);
   };
 
-  #handleFormSubmit = () => {
+  #handleFormSubmit = (waypoint) => {
+    this.#handleDataChange(waypoint);
+    this.#replaceFormToPoint();
+    document.body.removeEventListener('keydown', this.#ecsKeydown);
+  };
+
+  #handleButtonClick = () => {
+    this.#editFormComponent.reset(this.#waypoint);
     this.#replaceFormToPoint();
     document.body.removeEventListener('keydown', this.#ecsKeydown);
   };

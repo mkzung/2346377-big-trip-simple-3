@@ -6,7 +6,7 @@ import {isSelectedOption} from '../mock/sort';
 function createSortItemTemplate(sortType) {
   return `
   <div class="trip-sort__item  trip-sort__item--${sortType}">
-    <input id="sort-${sortType}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${sortType}" ${isSelectedOption(sortType)} ${(sortType === 'day' ? 'checked' : '')}>
+    <input id="sort-${sortType}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${sortType}"  ${isSelectedOption(sortType)} ${(sortType === 'day' ? 'checked' : '')}>
     <label class="trip-sort__btn" for="sort-${sortType}">${changeType(sortType)}</label>
   </div>`;
 }
