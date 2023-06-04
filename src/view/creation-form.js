@@ -166,16 +166,23 @@ function createCreationFormTemplate() {
 }
 
 export default class CreationForm {
-  getTemplate() {
-    return createCreationFormTemplate();
+  #element = null;
+  #oneWaypoint = null;
+
+  constructor(oneWaypoint) {
+    this.#oneWaypoint = oneWaypoint;
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get template() {
+    return createCreationFormTemplate(this.#oneWaypoint);
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
