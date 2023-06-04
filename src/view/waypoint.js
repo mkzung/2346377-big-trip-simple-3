@@ -1,21 +1,23 @@
-import {createElement} from '../render.js';
-import {getDestinationByID} from '../mock/destination';
 import {getDateDayAndMo, getDateWithoutT, getDateWithT, getTime} from '../utils';
-import {getOfferById} from '../mock/offers';
+import AbstractView from '../framework/view/abstract-view';
+import { getItemFromItemsById } from '../utils';
+import he from 'he';
 
-function createOffersTemplate(offerIds, type) {
-  return offerIds.map((offerId) => {
-    const oneOffer = getOfferById(type, offerId);
-    return `<li class="event__offer">
-          <span class="event__offer-title">${oneOffer.title}</span>
-          &plus;&euro;&nbsp;
-          <span class="event__offer-price">${oneOffer.price}</span>
-        </li>`;
-  }).join('');
+
+function createOffersTemplate(selectedOffersIDs, offers, type) {
+  const currentTypeOffers = offers.find((el) => el.type === type).offers;
+  return currentTypeOffers.filter((offer) => selectedOffersIDs.includes(offer.id))
+    .map((offer) => `
+      <li class="event__offer">
+        <span class="event__offer-title">${offer.title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${offer.price}</span>
+      </li>`)
+    .join('');
 }
 
-function createWaypointTemplate(oneWaypoint) {
-  const itemDest = getDestinationByID(oneWaypoint.destination);
+function createWaypointTemplate(oneWaypoint, destinations, offers) {
+  const itemDest = getItemFromItemsById(destinations, oneWaypoint.destination);
   return (
     `<li class="trip-events__item">
     <div class="event">
@@ -23,7 +25,7 @@ function createWaypointTemplate(oneWaypoint) {
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${oneWaypoint.type}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">${oneWaypoint.type} ${itemDest.name}</h3>
+      <h3 class="event__title">${oneWaypoint.type} ${he.encode(itemDest.name)}</h3>
       <div class="event__schedule">
         <p class="event__time">
           <time class="event__start-time" datetime="${getDateWithT(oneWaypoint.dateFrom)}">${getTime(oneWaypoint.dateFrom)}</time>
@@ -36,7 +38,7 @@ function createWaypointTemplate(oneWaypoint) {
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
-      ${createOffersTemplate(oneWaypoint.offersIDs, oneWaypoint.type)}
+      ${createOffersTemplate(oneWaypoint.offersIDs, offers, oneWaypoint.type)}
       </ul>
       <button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
@@ -46,27 +48,28 @@ function createWaypointTemplate(oneWaypoint) {
   );
 }
 
-export default class WaypointView {
-  #element = null;
+export default class WaypointView extends AbstractView {
   #oneWaypoint = null;
+  #handleClick = null;
+  #offers = null;
+  #destinations = null;
 
-  constructor(oneWaypoint) {
+  constructor({oneWaypoint, onClick, offers, destinations}) {
+    super();
     this.#oneWaypoint = oneWaypoint;
+    this.#handleClick = onClick;
+    this.#offers = offers;
+    this.#destinations = destinations;
+
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
   }
 
   get template() {
-    return createWaypointTemplate(this.#oneWaypoint);
+    return createWaypointTemplate(this.#oneWaypoint, this.#destinations, this.#offers);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
+  #clickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleClick();
+  };
 }
