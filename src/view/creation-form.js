@@ -1,8 +1,9 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view';
 
 function createCreationFormTemplate() {
   return (
-    `<form class="event event--edit" action="#" method="post">
+    `<li class="trip-events__item">
+    <form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
         <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -161,31 +162,20 @@ function createCreationFormTemplate() {
         </div>
       </section>
     </section>
-  </form>`
+  </form>
+  </li> `
   );
 }
 
-export default class CreationForm {
-  #element = null;
+export default class CreationForm extends AbstractView {
   #oneWaypoint = null;
 
   constructor(oneWaypoint) {
+    super();
     this.#oneWaypoint = oneWaypoint;
   }
 
   get template() {
     return createCreationFormTemplate(this.#oneWaypoint);
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }
