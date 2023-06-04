@@ -2,7 +2,7 @@ import {render, replace, remove} from '../framework/render';
 import WaypointView from '../view/waypoint';
 import EditForm from '../view/edit-form';
 import {isDatesEqual, isEsc} from '../utils';
-import {UpdateType, UserAction} from '../mock/const';
+import {UpdateType, UserAction} from '../const';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
