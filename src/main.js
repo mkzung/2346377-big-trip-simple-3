@@ -25,3 +25,4 @@ const boardPresenter = new BoardPresenter({
 render(new Filters(), siteHeaderElement);
 
 boardPresenter.init();
+//6_2
