@@ -99,7 +99,7 @@ const flightOffers = [{
   id: 1,
   title: 'Food order',
   price: 70
-},{
+}, {
   id: 7,
   title: 'Drinks order',
   price: 50
@@ -132,38 +132,38 @@ const offersByType = [{
   type: 'taxi',
   offers: taxiOffers
 },
-{
-  type: 'bus',
-  offers: busOffers
-},
-{
-  type: 'train',
-  offers: trainOffers
-},
-{
-  type: 'ship',
-  offers: shipOffers
-},
-{
-  type: 'drive',
-  offers: driveOffers
-},
-{
-  type: 'flight',
-  offers: flightOffers
-},
-{
-  type: 'check-in',
-  offers: checkInOffers
-},
-{
-  type: 'sightseeing',
-  offers: sightseeingOffers
-},
-{
-  type: 'restaurant',
-  offers: restaurantOffers
-},];
+  {
+    type: 'bus',
+    offers: busOffers
+  },
+  {
+    type: 'train',
+    offers: trainOffers
+  },
+  {
+    type: 'ship',
+    offers: shipOffers
+  },
+  {
+    type: 'drive',
+    offers: driveOffers
+  },
+  {
+    type: 'flight',
+    offers: flightOffers
+  },
+  {
+    type: 'check-in',
+    offers: checkInOffers
+  },
+  {
+    type: 'sightseeing',
+    offers: sightseeingOffers
+  },
+  {
+    type: 'restaurant',
+    offers: restaurantOffers
+  },];
 
 const getOffersByType = (type) => offersByType.find((currentTypeOffers) => currentTypeOffers.type === type).offers;
 
@@ -188,7 +188,7 @@ const SortType = {
   EVENT: 'event',
   TIME: 'time',
   PRICE: 'price',
-  OFFERS: 'offers'
+  OFFER: 'offer'
 };
 
 export {pointTypes, variousDates, offersByType, getOffersByType, descrText, cities, FilterType, SortType};
