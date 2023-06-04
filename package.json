@@ -1,0 +1,16 @@
+{
+  "name": "big-trip-simple",
+  "version": "19.0.0",
+  "private": true,
+  "description": "Проект «Большое путешествие (простой)» от HTML Academy",
+  "scripts": {
+    "lint": "eslint src/"
+  },
+  "devDependencies": {
+    "eslint": "8.28.0",
+    "eslint-config-htmlacademy": "8.0.0"
+  },
+  "engines": {
+    "node": "18"
+  }
+}
