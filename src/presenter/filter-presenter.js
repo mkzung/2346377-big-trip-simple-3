@@ -8,7 +8,6 @@ export default class FilterPresenter {
   #filterContainer = null;
   #modelFilter = null;
   #modelWaypoints = null;
-
   #filterComponent = null;
 
   constructor({filterContainer, modelFilter, modelWaypoints}) {
@@ -21,7 +20,10 @@ export default class FilterPresenter {
   }
 
   get filters() {
-    return [FilterType.EVERYTHING, FilterType.FUTURE, FilterType.PAST].map((type) => ({ type, name: FilterTypeDescriptions[type]}));
+    return [FilterType.EVERYTHING, FilterType.FUTURE, FilterType.PAST].map((type) => ({
+      type,
+      name: FilterTypeDescriptions[type]
+    }));
   }
 
   init() {
