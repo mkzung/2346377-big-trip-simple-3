@@ -1,5 +1,5 @@
-import { getRandomId, getRandomItemFromItems, createIDgenerator } from '../utils';
-import { descrText, cities } from './const';
+import {getRandomId, getRandomItemFromItems, createIDgenerator} from '../utils';
+import {descrText, cities} from './const';
 
 const destinations = [];
 
@@ -30,6 +30,6 @@ const generateDestinations = (n) => {
 };
 
 
-const getDestinationByID = (id) => destinations.find((item)=>item.id === id);
+const getDestinationByID = (id) => destinations.find((item) => item.id === id);
 
 export {generateDestinations, destinations, getDestinationByID};
