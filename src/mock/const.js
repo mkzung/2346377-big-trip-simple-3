@@ -178,4 +178,17 @@ const cities = [
   'Tokyo', 'Seoul', 'Shanghai', 'Paris', 'New York'
 ];
 
-export {pointTypes, variousDates, offersByType, getOffersByType, descrText, cities};
+const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future'
+};
+
+const SortType = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFERS: 'offers'
+};
+
+export {pointTypes, variousDates, offersByType, getOffersByType, descrText, cities, FilterType, SortType};
