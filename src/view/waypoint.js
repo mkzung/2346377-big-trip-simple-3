@@ -17,11 +17,7 @@ function createOffersTemplate(selectedOffersIDs, offers, type) {
 }
 
 function createWaypointTemplate(oneWaypoint, destinations, offers) {
-  console.log(destinations);
-  console.log(offers);
-  console.log(oneWaypoint);
   const itemDest = getItemFromItemsById(destinations, oneWaypoint.destination);
-  console.log(itemDest);
   return (
     `<li class="trip-events__item">
     <div class="event">

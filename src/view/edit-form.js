@@ -7,7 +7,7 @@ import {pointTypes} from '../const';
 import he from 'he';
 
 const BLANK_WAYPOINT = {
-  basePrice: 77777,
+  basePrice: 777,
   dateFrom: '2077-07-17T17:17:17.375Z',
   dateTo: '2088-07-17T17:17:17.375Z',
   destination: undefined,
@@ -16,18 +16,25 @@ const BLANK_WAYPOINT = {
   type: 'taxi',
 };
 
+const getTitle = (isEditForm, isDeleting) => {
+  if (!isEditForm) {
+    return 'Cancel';
+  }
+  return (isDeleting) ? 'Deleting...' : 'Delete';
+};
+
 function createDetinationListTemplate(destinations) {
   return destinations.map((destination) => `
     <option value="${destination.name}"></option>`
   ).join('');
 }
 
-function createOffersTemplate(offersIDs, curTypeOffers, id) {
+function createOffersTemplate(offersIDs, curTypeOffers, id, isDisabled) {
   return curTypeOffers.map((offer) => {
     const isOfferChecked = offersIDs.includes(offer.id) ? 'checked' : '';
     return `
     <div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-${id}" type="checkbox" name="event-offer-${offer.id}" ${isOfferChecked}>
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-${id}" type="checkbox" name="event-offer-${offer.id}" ${isOfferChecked} ${(isDisabled) ? 'disabled' : ''}>
       <label class="event__offer-label" for="event-offer-${offer.id}-${id}">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
@@ -65,7 +72,7 @@ function createEditFormTemplate(isEditForm, oneWaypoint, offers, destinations) {
           <span class="visually-hidden">Choose event type</span>
           <img class="event__type-icon" width="17" height="17" src="img/icons/${oneWaypoint.type}.png" alt="${oneWaypoint.type} icon">
         </label>
-        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${oneWaypoint.id}" type="checkbox">
+        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${oneWaypoint.id}" type="checkbox" ${(oneWaypoint.isDisabled) ? 'disabled' : ''}>
 
         <div class="event__type-list">
           <fieldset class="event__type-group">
@@ -80,7 +87,7 @@ function createEditFormTemplate(isEditForm, oneWaypoint, offers, destinations) {
         <label class="event__label  event__type-output" for="event-destination-${oneWaypoint.id}">
           ${makeFirstLetterUpperCase(oneWaypoint.type)}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-${oneWaypoint.id}" type="text" name="event-destination" value="${(itemDest) ? he.encode(itemDest.name) : ''}" list="destination-list-${oneWaypoint.id}" autocomplete="off">
+        <input class="event__input  event__input--destination" id="event-destination-${oneWaypoint.id}" type="text" name="event-destination" value="${(itemDest) ? he.encode(itemDest.name) : ''}" list="destination-list-${oneWaypoint.id}" autocomplete="off" ${(oneWaypoint.isDisabled) ? 'disabled' : ''}>
         <datalist id="destination-list-${oneWaypoint.id}">
           ${createDetinationListTemplate(destinations)}
         </datalist>
@@ -88,10 +95,10 @@ function createEditFormTemplate(isEditForm, oneWaypoint, offers, destinations) {
 
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-${oneWaypoint.id}">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-${oneWaypoint.id}" type="text" name="event-start-time" value="${getDateYears(oneWaypoint.dateFrom)}">
+        <input class="event__input  event__input--time" id="event-start-time-${oneWaypoint.id}" type="text" name="event-start-time" value="${getDateYears(oneWaypoint.dateFrom)}" ${(oneWaypoint.isDisabled) ? 'disabled' : ''}>
         &mdash;
         <label class="visually-hidden" for="event-end-time-${oneWaypoint.id}">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-${oneWaypoint.id}" type="text" name="event-end-time" value="${getDateYears(oneWaypoint.dateFrom)}">
+        <input class="event__input  event__input--time" id="event-end-time-${oneWaypoint.id}" type="text" name="event-end-time" value="${getDateYears(oneWaypoint.dateFrom)}" ${(oneWaypoint.isDisabled) ? 'disabled' : ''}>
       </div>
 
       <div class="event__field-group  event__field-group--price">
@@ -99,11 +106,11 @@ function createEditFormTemplate(isEditForm, oneWaypoint, offers, destinations) {
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-${oneWaypoint.id}" type="number" name="event-price" value="${oneWaypoint.basePrice}">
+        <input class="event__input  event__input--price" id="event-price-${oneWaypoint.id}" type="number" name="event-price" value="${oneWaypoint.basePrice}" autocomplete="off" min="0" max="7777777" ${(oneWaypoint.isDisabled) ? 'disabled' : ''}">
       </div>
 
-      <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">${(isEditForm) ? 'Delete' : 'Cancel'}</button>
+      <button class="event__save-btn  btn  btn--blue" type="submit"${(oneWaypoint.isDisabled) ? 'disabled' : ''}>${(oneWaypoint.isSaving) ? 'Saving...' : 'Save'}</button>
+      <button class="event__reset-btn" type="reset" ${(oneWaypoint.isDisabled) ? 'disabled' : ''}>${getTitle(isEditForm, oneWaypoint.isDeleting)}</button>
        ${(isEditForm) ? `
        <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
@@ -114,7 +121,7 @@ function createEditFormTemplate(isEditForm, oneWaypoint, offers, destinations) {
       <section class="event__section  event__section--offers  ${(curTypeOffers.length === 0) ? 'visually-hidden' : ''}">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
         <div class="event__available-offers">
-            ${createOffersTemplate(oneWaypoint.offersIDs, curTypeOffers, oneWaypoint.id)}
+            ${createOffersTemplate(oneWaypoint.offersIDs, curTypeOffers, oneWaypoint.id, oneWaypoint.isDisabled)}
         </div>
       </section>
 
@@ -146,13 +153,19 @@ export default class EditForm extends AbstractStatefulView {
   static parseWaypointToState(waypoint, offers) {
     return {
       ...waypoint,
-      curTypeOffers: offers.find((el) => el.type === waypoint.type).offers
+      curTypeOffers: offers.find((el) => el.type === waypoint.type).offers,
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
     };
   }
 
   static parseStateToWaypoint(state) {
     const waypoint = {...state};
     delete waypoint.curTypeOffers;
+    delete waypoint.isDisabled;
+    delete waypoint.isSaving;
+    delete waypoint.isDeleting;
     return waypoint;
   }
 
@@ -229,17 +242,21 @@ export default class EditForm extends AbstractStatefulView {
 
 
   #fromDateChangeHandler = ([userDate]) => {
-    this.updateElement({
-      dateFrom: userDate.toISOString(),
-    });
-    this.#toDatepicker.set('minDate', userDate);
+    if (userDate) {
+      this._setState({
+        dateFrom: userDate.toISOString(),
+      });
+      this.#toDatepicker.set('minDate', userDate);
+    }
   };
 
 
   #toDateChangeHandler = ([userDate]) => {
-    this.updateElement({
-      dateTo: userDate.toISOString(),
-    });
+    if (userDate) {
+      this._setState({
+        dateTo: userDate.toISOString(),
+      });
+    }
   };
 
   #setFromDatePicker() {
