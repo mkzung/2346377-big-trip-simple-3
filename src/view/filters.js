@@ -1,58 +1,34 @@
-import dayjs from 'dayjs';
+import AbstractView from '../framework/view/abstract-view';
+import { changeType } from '../utils.js';
 
-const EVENT_DATE_FORMAT = 'MMM D';
-const EVENT_TIME_FORMAT = 'H:mm';
-const EVENT_YEARS_FORMAT = 'DD/MM/YY H:mm';
-
-const getRandomItemFromItems = (items) => items[Math.floor(Math.random() * items.length)];
-
-const getRandomPrice = () => Math.floor(Math.random() * 100000) + 777;
-
-const getRandomId = () => Math.floor(Math.random() * 100) + 1;
-
-const getRandomSliceFromItems = (items) => {
-  const n = Math.floor(Math.random() * (items.length + 1));
-  const shuffled = [...items].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, n);
-};
-
-const createIDgenerator = () => {
-  let id = 0;
-  return () => ++id;
-};
-
-function getRandomArrayElement(items) {
-  return items[Math.floor(Math.random() * items.length)];
+function createFilterItemTemplate(filterType) {
+  return `
+  <div class="trip-filters__filter">
+      <input id="filter-${filterType}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${filterType}">
+      <label class="trip-filters__filter-label" for="filter-${filterType}">${changeType(filterType)}</label>
+  </div>
+  `;
 }
 
-const isEsc = (evt) => evt.key === 'Escape';
+function createFilterTemplate(filters) {
+  const filterItems = filters.map((filter) => createFilterItemTemplate(filter)).join('');
+  return (`
+    <form class="trip-filters" action="#" method="get">
+      ${filterItems}
+      <button class="visually-hidden" type="submit">Accept filter</button>
+    </form>`
+  );
+}
 
-const getItemFromItemsById = (items, id) => (items.find((item) => item.id === id));
+export default class Filters extends AbstractView {
+  #filters = null;
 
-const isTripDateBeforeToday = (date) => dayjs(date).isBefore(dayjs(), 'D') || dayjs(date).isSame(dayjs(), 'D');
+  constructor(filters) {
+    super();
+    this.#filters = filters;
+  }
 
-const changeType = (type) => type.charAt(0).toUpperCase() + type.slice(1);
-
-const getDateWithoutT = (dateStr) => dateStr.substring(0, dateStr.indexOf('T'));
-const getDateDayAndMo = (dateStr) => dayjs(dateStr).format(EVENT_DATE_FORMAT);
-const getDateWithT = (dateStr) => dateStr.substring(0, dateStr.lastIndexOf(':'));
-const getTime = (dateStr) => dayjs(dateStr).format(EVENT_TIME_FORMAT);
-const getDateYears = (date) => dayjs(date).format(EVENT_YEARS_FORMAT);
-
-export {
-  getRandomItemFromItems,
-  getRandomPrice,
-  getRandomSliceFromItems,
-  getRandomId,
-  createIDgenerator,
-  getRandomArrayElement,
-  getDateWithoutT,
-  getDateDayAndMo,
-  getDateWithT,
-  getTime,
-  getItemFromItemsById,
-  getDateYears,
-  isEsc,
-  changeType,
-  isTripDateBeforeToday
-};
+  get template() {
+    return createFilterTemplate(this.#filters);
+  }
+}
