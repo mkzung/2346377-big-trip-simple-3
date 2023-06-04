@@ -1,4 +1,4 @@
-import {getRandomItemFromItems, getRandomPrice, createIDgenerator, getRandomArrayElement} from '../utils.js';
+import {getRandomItemFromItems, getRandomPrice, createIDgenerator} from '../utils.js';
 import {variousDates, pointTypes } from './const.js';
 import { destinations, generateDestinations } from './destination.js';
 import {getRandomOffersIdsByType} from './offers.js';
@@ -23,13 +23,9 @@ const generateWaypoints = (n) => {
   }
 };
 
-const mockInit = (numWaypoints, numDestinations) => { //переставить
+const mockInit = (numWaypoints, numDestinations) => {
   generateDestinations(numDestinations);
   generateWaypoints(numWaypoints);
 };
 
-function getRandomPoint() {
-  return getRandomArrayElement(waypoints);
-}
-
-export {mockInit, waypoints, getRandomPoint};
+export {mockInit, waypoints};

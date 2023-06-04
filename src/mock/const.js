@@ -165,29 +165,7 @@ const offersByType = [{
   offers: restaurantOffers
 },];
 
-
-const getOffersByType = (type) => {
-  switch (type) {
-    case 'taxi':
-      return taxiOffers;
-    case 'bus':
-      return busOffers;
-    case 'train':
-      return trainOffers;
-    case 'ship':
-      return shipOffers;
-    case 'drive':
-      return driveOffers;
-    case 'flight':
-      return flightOffers;
-    case 'check-in':
-      return checkInOffers;
-    case 'sightseeing':
-      return sightseeingOffers;
-    case 'restaurant':
-      return restaurantOffers;
-  }
-};
+const getOffersByType = (type) => offersByType.find((currentTypeOffers) => currentTypeOffers.type === type).offers;
 
 const descrText = [
   'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.',
