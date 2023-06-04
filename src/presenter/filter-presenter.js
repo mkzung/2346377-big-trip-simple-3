@@ -2,7 +2,7 @@ import {FilterType, FilterTypeDescriptions, UpdateType} from '../const';
 import Filters from '../view/filters';
 import {render} from '../render';
 import {remove, replace} from '../framework/render';
-
+import {filter} from '../utils';
 
 export default class FilterPresenter {
   #filterContainer = null;
@@ -20,9 +20,11 @@ export default class FilterPresenter {
   }
 
   get filters() {
+    const waypoints = this.#modelWaypoints.waypoints;
     return [FilterType.EVERYTHING, FilterType.FUTURE, FilterType.PAST].map((type) => ({
       type,
-      name: FilterTypeDescriptions[type]
+      name: FilterTypeDescriptions[type],
+      count: filter[type](waypoints).length
     }));
   }
 
