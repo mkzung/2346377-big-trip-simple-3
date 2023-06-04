@@ -1,11 +1,11 @@
 export default class ModelWaypoint {
-  #arrWaypoints = null;
+  #waypoints = null;
 
-  constructor(arrWaypoints) {
-    this.#arrWaypoints = arrWaypoints;
+  constructor(waypoints) {
+    this.#waypoints = waypoints;
   }
 
-  get arrWaypoints() {
-    return this.#arrWaypoints;
+  get waypoints() {
+    return this.#waypoints;
   }
 }
