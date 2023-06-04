@@ -1,9 +1,10 @@
 import {getDateYears, getItemFromItemsById} from '../utils';
-import {pointTypes} from '../mock/const';
 import {makeFirstLetterUpperCase} from '../utils';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.css';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
+import {pointTypes} from '../const';
+import he from 'he';
 
 const BLANK_WAYPOINT = {
   basePrice: 77777,
@@ -79,7 +80,7 @@ function createEditFormTemplate(isEditForm, oneWaypoint, offers, destinations) {
         <label class="event__label  event__type-output" for="event-destination-${oneWaypoint.id}">
           ${makeFirstLetterUpperCase(oneWaypoint.type)}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-${oneWaypoint.id}" type="text" name="event-destination" value="${(itemDest) ? itemDest.name : ''}" list="destination-list-${oneWaypoint.id}" autocomplete="off">
+        <input class="event__input  event__input--destination" id="event-destination-${oneWaypoint.id}" type="text" name="event-destination" value="${(itemDest) ? he.encode(itemDest.name) : ''}" list="destination-list-${oneWaypoint.id}" autocomplete="off">
         <datalist id="destination-list-${oneWaypoint.id}">
           ${createDetinationListTemplate(destinations)}
         </datalist>
