@@ -1,7 +1,8 @@
 import {render, replace, remove} from '../framework/render';
 import WaypointView from '../view/waypoint';
 import EditForm from '../view/edit-form';
-import {isEsc} from '../utils';
+import {isDatesEqual, isEsc} from '../utils';
+import {UpdateType, UserAction} from '../mock/const';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -48,6 +49,7 @@ export default class WaypointPresenter {
       offers: this.#offers,
       destinations: this.#destinations,
       onRollUpButton: this.#handleButtonClick,
+      onDeleteClick: this.#handleDeleteClick
     });
 
     if (prevWaypointComponent === null || prevEditFormComponent === null) {
@@ -104,8 +106,13 @@ export default class WaypointPresenter {
     document.body.addEventListener('keydown', this.#ecsKeydown);
   };
 
-  #handleFormSubmit = (waypoint) => {
-    this.#handleDataChange(waypoint);
+  #handleFormSubmit = (update) => {
+    const isMinorUpdate = !isDatesEqual(this.#waypoint.dateFrom, update.dateFrom) || this.#waypoint.basePrice !== update.basePrice;
+    this.#handleDataChange(
+      UserAction.UPDATE_WAYPOINT,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      update,
+    );
     this.#replaceFormToPoint();
     document.body.removeEventListener('keydown', this.#ecsKeydown);
   };
@@ -115,4 +122,13 @@ export default class WaypointPresenter {
     this.#replaceFormToPoint();
     document.body.removeEventListener('keydown', this.#ecsKeydown);
   };
+
+  #handleDeleteClick = (waypoint) => {
+    this.#handleDataChange(
+      UserAction.DELETE_WAYPOINT,
+      UpdateType.MINOR,
+      waypoint,
+    );
+  };
+
 }
