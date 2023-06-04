@@ -5,6 +5,7 @@ import WaypointView from '../view/waypoint';
 import WaypointList from '../view/waypoint-list';
 import {render} from '../render';
 import {isEsc} from '../utils';
+import NoWaypointMessage from '../view/no-waypoints';
 
 export default class BoardPresenter {
   #waypointListComponent = null;
@@ -19,13 +20,18 @@ export default class BoardPresenter {
 
   init() {
     const waypoints = [...this.#waypointsModel.arrWaypoints];
-    render(new Sorting(), this.#boardContainer);
-    this.#waypointListComponent = new WaypointList();
-    render(this.#waypointListComponent, this.#boardContainer);
-    render(new CreationForm(), this.#waypointListComponent.element);
-    this.#renderWaypoint(waypoints[0]);
-    for (let i = 1; i < 4; i++) {
-      this.#renderWaypoint(waypoints[i]);
+    if (waypoints.length === 0) {
+      this.#noWaypointMessage = new NoWaypointMessage();
+      render(this.#noWaypointMessage, this.#boardContainer);
+    } else {
+      render(new Sorting(), this.#boardContainer);
+      this.#waypointListComponent = new WaypointList();
+      render(this.#waypointListComponent, this.#boardContainer);
+      render(new CreationForm(), this.#waypointListComponent.element);
+      this.#renderWaypoint(waypoints[0]);
+      for (let i = 1; i < 4; i++) {
+        this.#renderWaypoint(waypoints[i]);
+      }
     }
   }
 
